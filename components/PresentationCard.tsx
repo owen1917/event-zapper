@@ -64,11 +64,10 @@ function PresentationCard({
       <Image
         src={speaker.imageSrc}
         alt="Picture of the author"
-        className="object-cover rounded-full shrink-0 border-8 aspect-square max-h-[50%]"
+        className="object-cover rounded-full shrink-0 aspect-square max-h-[50%]"
         style={{ borderColor: speakerColor, height: `${imgSize}%` }}
         width="100"
         height="100"
-        //style={{ width: '100px', height: '100px' }}
       />
       <div>{speaker.name}</div>
       <QrCode
