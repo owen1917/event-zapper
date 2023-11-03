@@ -76,15 +76,6 @@ function SpeakerCard({ card }: { card: Card }) {
             />
           </svg>
         ) : null}
-
-        {/* <input
-          type="file"
-          accept="image/*"
-          style={{ display: "none" }}
-          ref={fileInput}
-          onChange={(event) => handleImageUpload(event)}
-          className="block w-full p-2  border border-gray-300 rounded-lg bg-red sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-        /> */}
         <div className="font-bold text-sm text-white">{name}</div>
       </div>
       <div className="flex flex-col space-y-4 justify-center w-full">
@@ -113,6 +104,9 @@ function SpeakerCard({ card }: { card: Card }) {
       </div>
       <div
         className="self-end text-xs shadow-lg cursor-pointer"
+        style={{
+          textShadow: "0 -1rem 1rem #a855f7, 0 1rem 2rem #000",
+        }}
         onClick={handleRemoveSpeaker}
       >
         🗑️

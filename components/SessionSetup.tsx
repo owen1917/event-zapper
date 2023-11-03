@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import SpeakerPreviewCard from "./SpeakerPreviewCard";
 import useStore from "./store";
 
 function SessionSetup() {
@@ -57,7 +56,7 @@ function SessionSetup() {
           />
         </div> */}
 
-        <SpeakerPreviewCard speaker={3} />
+        {/* <SpeakerPreviewCard speaker={3} /> */}
 
         {/* <ActionBtn speakers={numOfSpeakers} /> */}
 

@@ -4,7 +4,7 @@ import Speaker from "@/types/Speaker";
 import Image from "next/image";
 import { useCallback } from "react";
 import ActionBtn from "./ActionBtn";
-import Footer from "./Footer";
+import Header from "./Header";
 import SpeakerCard from "./SpeakerCard";
 import SpeakerPreviewCard from "./SpeakerPreviewCard";
 import useStore from "./store";
@@ -34,6 +34,7 @@ const CreateSession = () => {
         <span className="font-bold text-6xl text-violet-600">Event Zapper</span>
       </div>
       <hr className="my-5 h-1 border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-25 dark:opacity-100" />
+      <Header />
       {SpeakerCards.map((card) => {
         return (
           <div className="mb-4" key={card.id}>
@@ -45,8 +46,6 @@ const CreateSession = () => {
       <SpeakerPreviewCard addSpeaker={addNewSpeaker} />
       <div className="h-4"></div>
       <ActionBtn speakers={SpeakerCards.length} />
-
-      <Footer />
     </div>
   );
 };

@@ -22,10 +22,10 @@ export default function RootLayout({
           href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.0.0/flowbite.min.css"
           rel="stylesheet"
         />
+        <Script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.0.0/flowbite.min.js"></Script>
       </head>
       <body style={{ color: "#a855f7", background: "#0a0a0a" }}>
         {children}
-        <Script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.0.0/flowbite.min.js"></Script>
       </body>
     </html>
   );

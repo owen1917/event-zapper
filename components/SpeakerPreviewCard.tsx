@@ -1,6 +1,7 @@
 import Speaker from "@/types/Speaker";
 import Image from "next/image";
 import { ChangeEvent, useCallback, useRef, useState } from "react";
+import { Tooltip } from "react-tooltip";
 
 const SpeakerPreviewCard = ({
   addSpeaker,
@@ -13,7 +14,13 @@ const SpeakerPreviewCard = ({
   const [nostrProfileToggle, setNostrProfileToggle] = useState(true);
 
   const hasNpubAddress = Boolean(npubPrefix || donationNpubPrefix);
-  const isDisabled = !name || !hasNpubAddress;
+
+  const hasNostrDisabledRules = !hasNpubAddress;
+  const anonDisabledRules = !name || !hasNpubAddress;
+  const disabledRules = nostrProfileToggle
+    ? hasNostrDisabledRules
+    : anonDisabledRules;
+
   const fileInput = useRef<HTMLInputElement>(null);
   const [imageSrc, setImageSrc] = useState("dummy.svg");
 
@@ -27,6 +34,7 @@ const SpeakerPreviewCard = ({
 
     // reset to default
     setImageSrc("dummy.svg");
+    setNpubPrefix("");
   }, [addSpeaker, name, npubPrefix, donationNpubPrefix, imageSrc]);
 
   const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
@@ -54,22 +62,6 @@ const SpeakerPreviewCard = ({
             height="100"
             onClick={() => fileInput.current!.click()}
           />
-          {imageSrc === "dummy.svg" ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="4"
-              stroke="#000000"
-              className="w-6 h-6 relative top-[-25px] left-[-25px]"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 4.5v15m7.5-7.5h-15"
-              />
-            </svg>
-          ) : null}
           <input
             type="file"
             accept="image/*"
@@ -80,21 +72,23 @@ const SpeakerPreviewCard = ({
           />
         </div>
         <div className="w-[100%] space-y-3">
-          <div>
-            <label
-              htmlFor="small-input"
-              className="block mb-2 text-sm font-medium text-white"
-            >
-              Speakers name
-            </label>
-            <input
-              type="text"
-              id="small-input"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="block w-full p-2  border border-gray-300 rounded-lg bg-red sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            />
-          </div>
+          {!nostrProfileToggle && (
+            <div>
+              <label
+                htmlFor="small-input"
+                className="block mb-2 text-sm font-medium text-white"
+              >
+                {"Speaker's name"}
+              </label>
+              <input
+                type="text"
+                id="small-input"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="block w-full p-2  border border-gray-300 rounded-lg bg-red sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              />
+            </div>
+          )}
 
           {nostrProfileToggle && (
             <div>
@@ -102,7 +96,7 @@ const SpeakerPreviewCard = ({
                 htmlFor="small-input-2"
                 className="block mb-2 text-sm font-medium text-white"
               >
-                Npub prefix
+                {"Speaker's public key (npub)"}
               </label>
               <input
                 min={1}
@@ -120,8 +114,20 @@ const SpeakerPreviewCard = ({
                 htmlFor="small-input-3"
                 className="block mb-2 text-sm font-medium text-white"
               >
-                Donation Npub Prefix
+                Donation public key (npub){" "}
+                <a
+                  data-tooltip-id="my-tooltip"
+                  data-tooltip-content="Zaps will go to this address instead"
+                  className="cursor-pointer"
+                  style={{
+                    textShadow: "0 -1rem 1rem #a855f7, 0 1rem 2rem #000",
+                  }}
+                >
+                  💡
+                </a>
               </label>
+
+              <Tooltip id="my-tooltip" />
               <input
                 min={1}
                 type="text"
@@ -151,7 +157,7 @@ const SpeakerPreviewCard = ({
       <button
         onClick={handleAddSpeaker}
         type="button"
-        disabled={isDisabled}
+        disabled={disabledRules}
         className="text-white mt-3 transition-all ease-in  bg-indigo-800 hover:bg-indigo-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5
          mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 disabled:opacity-50 disabled:pointer-events-none"
       >
