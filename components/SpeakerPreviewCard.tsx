@@ -56,22 +56,39 @@ const SpeakerPreviewCard = ({
     <div className="flex flex-col p-3 text-gray-900 rounded-lg group bg-gradient-to-br from-purple-500 to-pink-500 group-hover:from-purple-500 group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800">
       <div className="flex flex-row">
         <div className="flex flex-col space-y-3 items-center self-center justify-center p-3">
-          <Image
-            src={imageSrc}
-            alt="Picture of the author"
-            className="object-cover rounded-full shrink-0 aspect-square max-h-[50%] self-start"
-            width="100"
-            height="100"
-            onClick={() => fileInput.current!.click()}
-          />
-          <input
-            type="file"
-            accept="image/*"
-            style={{ display: "none" }}
-            ref={fileInput}
-            onChange={(event) => handleImageUpload(event)}
-            className="block w-full p-2  border border-gray-300 rounded-lg bg-red sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          />
+          <div>
+            <Image
+              src={imageSrc}
+              alt="Picture of the author"
+              className="object-cover rounded-full shrink-0 aspect-square max-h-[50%] self-start"
+              width="100"
+              height="100"
+              onClick={() => fileInput.current!.click()}
+            />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="3"
+              stroke="#fff"
+              style={{ top: "-75", left: 0 }}
+              className="w-6 h-6 relative rounded-full cursor-pointer dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:focus:border-gray-700"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
+            </svg>
+            <input
+              type="file"
+              accept="image/*"
+              style={{ display: "none" }}
+              ref={fileInput}
+              onChange={(event) => handleImageUpload(event)}
+              className="block w-full p-2  border border-gray-300 rounded-lg bg-red sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            />
+          </div>
         </div>
         <div className="w-[100%] space-y-3">
           {!nostrProfileToggle && (
