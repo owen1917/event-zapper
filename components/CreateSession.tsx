@@ -29,9 +29,16 @@ const CreateSession = () => {
 
   return (
     <div>
-      <div className="flex items-center w-fit justify-center">
-        <Image src="zap.svg" width="30" height="30" alt="" />
-        <span className="font-bold text-6xl text-violet-600">Event Zapper</span>
+      <div className="flex flex-col items-center">
+        <div className="flex items-center w-fit justify-center">
+          <Image src="zap.svg" width="30" height="30" alt="" />
+          <p className="font-bold text-violet-600 text-4xl block md:hidden">
+            Event Zapper
+          </p>
+          <p className="font-bold text-violet-600 md:text-6xl hidden md:block">
+            Event Zapper
+          </p>
+        </div>
       </div>
       <hr className="my-5 h-1 border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-25 dark:opacity-100" />
       <Header />
