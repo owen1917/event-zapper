@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
+import { Tooltip } from "react-tooltip";
 import useStore from "./store";
 
 const Header = () => {
@@ -53,6 +54,14 @@ const Header = () => {
         <label className="text-sm font-bold">
           Relays (separated by comma):
         </label>
+        <a
+          data-tooltip-id="my-tooltip2"
+          data-tooltip-content="Relays will be monitored for incoming profile Zaps"
+          className="cursor-pointer"
+        >
+          💡
+        </a>
+        <Tooltip id="my-tooltip2" style={{ maxWidth: "200px" }} />
         <input
           className="p-2 rounded flex flex-col items-center w-[80%]"
           type="text"
