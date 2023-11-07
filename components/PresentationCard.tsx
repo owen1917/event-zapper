@@ -64,8 +64,8 @@ function PresentationCard({
       <Image
         src={speaker.imageSrc}
         alt="Picture of the author"
+        style={{ borderColor: speakerColor }}
         className="object-cover rounded-full shrink-0 aspect-square max-h-[50%]"
-        style={{ borderColor: speakerColor, height: `${imgSize}%` }}
         width="100"
         height="100"
       />
