@@ -35,6 +35,8 @@ const SpeakerPreviewCard = ({
     // reset to default
     setImageSrc("dummy.svg");
     setNpubPrefix("");
+    setDonationNpubPrefix("");
+    setName("");
   }, [addSpeaker, name, npubPrefix, donationNpubPrefix, imageSrc]);
 
   const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {

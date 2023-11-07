@@ -37,7 +37,7 @@ const CreateSession = () => {
       <Header />
       {SpeakerCards.map((card) => {
         return (
-          <div className="mb-4" key={card.id}>
+          <div className="mb-4" key={card.name + card.id.toString()}>
             <SpeakerCard card={card} />
           </div>
         );
