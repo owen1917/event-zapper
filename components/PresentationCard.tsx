@@ -1,7 +1,6 @@
 import QrCode from "@/components/QrCode";
 import ZapList from "@/components/ZapList";
 import Card from "@/types/Card";
-import Image from "next/image";
 import { nip19 } from "nostr-tools";
 import { useEffect, useState } from "react";
 import useStore from "./store";
@@ -16,7 +15,6 @@ function PresentationCard({
 }) {
   const speakerColor = useStore((state) => state.speakerColour);
   const [totalZaps, setTotalZaps] = useState(0);
-  const imgSize = useStore((state) => state.imgSize);
   const speakers = useStore((state) => state.SpeakerCards);
 
   const showBool = speaker.id === speakers.length;
@@ -39,11 +37,6 @@ function PresentationCard({
 
   return (
     <div className="flex flex-col items-center space-y-2 rounded-2xl shadow-md max-h-full flex-1 relative">
-      {speaker.id == 1 && (
-        <div className="flex flex-col absolute left-0 bottom-0 items-center p-2 text-xl">
-          <span>How to Zap? 👉 nostr.how/zaps</span>
-        </div>
-      )}
       <div className="flex items-center">
         <div className="text-3xl text-fuchsia-600">{totalZaps}</div>
         <svg
@@ -61,18 +54,11 @@ function PresentationCard({
           />
         </svg>
       </div>
-      <Image
-        src={speaker.imageSrc}
-        alt="Picture of the author"
-        style={{ borderColor: speakerColor }}
-        className="object-cover rounded-full shrink-0 aspect-square max-h-[50%]"
-        width="100"
-        height="100"
-      />
-      <div>{speaker.name}</div>
       <QrCode
+        imageSource={speaker.imageSrc}
         value={speaker.donationNpub != "" ? speaker.donationNpub : speaker.npub}
       />{" "}
+      <p className="font-bold text-violet-600 md:text-6xl">{speaker.name}</p>
       {/* so compiler wont complain */}
       {(decodedDonationNpub || decodedSpeakerNpub) && (
         <ZapList

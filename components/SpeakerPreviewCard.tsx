@@ -1,3 +1,4 @@
+import { parseNpubProfilePicture } from "@/app/utils";
 import Speaker from "@/types/Speaker";
 import Image from "next/image";
 import { ChangeEvent, useCallback, useRef, useState } from "react";
@@ -14,7 +15,6 @@ const SpeakerPreviewCard = ({
   const [nostrProfileToggle, setNostrProfileToggle] = useState(true);
 
   const hasNpubAddress = Boolean(npubPrefix || donationNpubPrefix);
-
   const hasNostrDisabledRules = !hasNpubAddress;
   const anonDisabledRules = !name || !hasNpubAddress;
   const disabledRules = nostrProfileToggle
@@ -52,26 +52,53 @@ const SpeakerPreviewCard = ({
     }
   };
 
+  const handlePaste = useCallback((event: any) => {
+    const pastedText = event.clipboardData.getData("Text");
+
+    if (pastedText.includes("npub")) {
+      setNpubPrefix(pastedText);
+      parseNpubProfilePicture({
+        npub: pastedText,
+        handleSetImg: setImageSrc,
+        handleSetName: setName,
+      });
+    }
+  }, []);
+
+  const handleFileInputClick = useCallback(() => {
+    if (nostrProfileToggle) {
+      return;
+    }
+
+    fileInput.current!.click();
+  }, [nostrProfileToggle]);
+
   return (
     <div className="flex flex-col p-3 text-gray-900 rounded-lg group bg-gradient-to-br from-purple-500 to-pink-500 group-hover:from-purple-500 group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800">
       <div className="flex flex-row">
         <div className="flex flex-col space-y-3 items-center self-center justify-center p-3">
-          <div>
+          <div className="flex flex-col space-y-3 items-center ml-4">
             <Image
               src={imageSrc}
               alt="Picture of the author"
-              className="object-cover rounded-full shrink-0 aspect-square max-h-[50%] self-start"
+              className={`object-cover rounded-full shrink-0 aspect-square max-h-[50%] self-start ${
+                nostrProfileToggle ? "cursor-default" : "cursor-pointer"
+              }`}
               width="100"
               height="100"
-              onClick={() => fileInput.current!.click()}
+              onClick={handleFileInputClick}
             />
+            <div className="font-bold text-sm text-white">{name}</div>
+          </div>
+          {imageSrc === "dummy.svg" && !nostrProfileToggle ? (
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth="3"
               stroke="#fff"
-              style={{ top: "-75", left: 0 }}
+              style={{ top: "-95", left: "-15" }}
+              onClick={handleFileInputClick}
               className="w-6 h-6 relative rounded-full cursor-pointer dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:focus:border-gray-700"
             >
               <path
@@ -80,15 +107,15 @@ const SpeakerPreviewCard = ({
                 d="M12 4.5v15m7.5-7.5h-15"
               />
             </svg>
-            <input
-              type="file"
-              accept="image/*"
-              style={{ display: "none" }}
-              ref={fileInput}
-              onChange={(event) => handleImageUpload(event)}
-              className="block w-full p-2  border border-gray-300 rounded-lg bg-red sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            />
-          </div>
+          ) : null}
+          <input
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            ref={fileInput}
+            onChange={(event) => handleImageUpload(event)}
+            className="block w-full p-2  border border-gray-300 rounded-lg bg-red sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          />
         </div>
         <div className="w-[100%] space-y-3">
           {!nostrProfileToggle && (
@@ -123,6 +150,7 @@ const SpeakerPreviewCard = ({
                 id="small-input-2"
                 value={npubPrefix}
                 onChange={(e) => setNpubPrefix(e.target.value)}
+                onPaste={handlePaste}
                 className="block w-full p-2  border border-gray-300 rounded-lg bg-red sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               />
             </div>
@@ -136,7 +164,7 @@ const SpeakerPreviewCard = ({
                 Donation public key (npub){" "}
                 <a
                   data-tooltip-id="my-tooltip"
-                  data-tooltip-content="Zaps will go to this address instead"
+                  data-tooltip-content="Zaps will go to this profile instead"
                   className="cursor-pointer"
                   style={{
                     textShadow: "0 -1rem 1rem #a855f7, 0 1rem 2rem #000",

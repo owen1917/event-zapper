@@ -81,10 +81,10 @@ function SpeakerCard({ card }: { card: Card }) {
       <div className="flex flex-col space-y-4 justify-center w-full">
         {npub && (
           <label className="block mb-2 text-sm font-medium text-white">
-            npub:
+            {"Speaker's public key (npub)"}
             <input
               value={card.npub}
-              className="block w-full p-2  border border-gray-300 rounded-lg bg-red sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 disabled:opacity-50"
+              className="block w-full p-2 mt-2 border border-gray-300 rounded-lg bg-red sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 disabled:opacity-50"
               type="text"
               disabled={true}
             />
@@ -92,10 +92,10 @@ function SpeakerCard({ card }: { card: Card }) {
         )}
         {donationNpub && (
           <label className="block mb-2 text-sm font-medium text-white">
-            Donation public key:
+            Donation public key (npub)
             <input
               value={card.donationNpub}
-              className="block w-full p-2  border border-gray-300 rounded-lg bg-red sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 disabled:opacity-50"
+              className="block w-full p-2 mt-2 border border-gray-300 rounded-lg bg-red sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 disabled:opacity-50"
               type="text"
               disabled={true}
             />
