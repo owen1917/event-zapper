@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 import { Tooltip } from "react-tooltip";
+import { About } from "./constants";
 import useStore from "./store";
 
 const Header = () => {
@@ -9,6 +10,11 @@ const Header = () => {
 
   const onOpenModal = () => setOpen(true);
   const onCloseModal = () => setOpen(false);
+
+  const [open2, setOpen2] = useState(false);
+
+  const onOpenModal2 = () => setOpen2(true);
+  const onCloseModal2 = () => setOpen2(false);
 
   const setRelays = useStore((state) => state.setRelays);
   const relays = useStore((state) => state.relays);
@@ -34,13 +40,9 @@ const Header = () => {
         <p className="text-white">⚙️ Relays</p>
       </button>
       <label className=" text-white">
-        <a
-          href="https://github.com/owen1917/event-zapper#readme"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <button>💡 Help</button>
-        </a>
+        <button onClick={onOpenModal2}>
+          <p className="text-white">💡 Help</p>
+        </button>
       </label>
 
       <Modal
@@ -48,7 +50,8 @@ const Header = () => {
         onClose={onCloseModal}
         center
         classNames={{
-          modal: "w-[80%]",
+          modal: "w-[80%] bg-gray-900 text-white p-5",
+          closeButton: "fill-white",
         }}
       >
         <label className="text-sm font-bold">
@@ -63,7 +66,7 @@ const Header = () => {
         </a>
         <Tooltip id="my-tooltip2" style={{ maxWidth: "200px" }} />
         <input
-          className="p-2 rounded flex flex-col items-center w-[80%]"
+          className="bg-gray-50 border mt-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           type="text"
           value={!!tempRelays[0] ? tempRelays.join(",") : relays}
           onInput={onHandleRelayChange}
@@ -77,6 +80,18 @@ const Header = () => {
         >
           Save
         </button>
+      </Modal>
+
+      <Modal
+        open={open2}
+        onClose={onCloseModal2}
+        center
+        classNames={{
+          modal: "w-[80%] bg-gray-900 text-white p-5",
+          closeButton: "fill-white",
+        }}
+      >
+        <About />
       </Modal>
     </div>
   );
