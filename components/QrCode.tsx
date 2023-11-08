@@ -19,9 +19,9 @@ function QrCode({
         value={npubPrefix + value}
         imageSettings={{
           src: imageSource,
-          height: 50,
-          width: 50,
-          excavate: true,
+          height: 25,
+          width: 25,
+          excavate: false,
         }}
       />
     </div>
