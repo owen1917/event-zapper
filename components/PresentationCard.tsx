@@ -3,6 +3,7 @@ import ZapList from "@/components/ZapList";
 import Card from "@/types/Card";
 import { nip19 } from "nostr-tools";
 import { useEffect, useState } from "react";
+import Bolt from "./Bolt";
 import useStore from "./store";
 function PresentationCard({
   speaker,
@@ -13,7 +14,6 @@ function PresentationCard({
   setGlobal: any;
   globalAmount: number;
 }) {
-  const speakerColor = useStore((state) => state.speakerColour);
   const [totalZaps, setTotalZaps] = useState(0);
   const speakers = useStore((state) => state.SpeakerCards);
 
@@ -31,34 +31,15 @@ function PresentationCard({
     console.log("cant decode speaker npub");
   }
 
+  console.log(decodedSpeakerNpub);
+
   useEffect(() => {
     setGlobal((prev: any) => ({ ...prev, [speaker.npub]: totalZaps }));
   }, [totalZaps, setGlobal, speaker.npub]);
 
   return (
     <div className="flex flex-col items-center space-y-2 rounded-2xl shadow-md max-h-full flex-1 relative">
-      <div className="flex items-center">
-        <div className="text-3xl text-fuchsia-600">{totalZaps}</div>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="#FFFF00"
-          viewBox="0 0 24 24"
-          strokeWidth="1.5"
-          stroke="#FFA500"
-          className="w-10 h-10"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
-          />
-        </svg>
-      </div>
-      <QrCode
-        imageSource={speaker.imageSrc}
-        value={speaker.donationNpub != "" ? speaker.donationNpub : speaker.npub}
-      />{" "}
-      <p className="font-bold text-violet-600 md:text-6xl">{speaker.name}</p>
+      <QrCode speaker={speaker} totalZaps={totalZaps} />
       {/* so compiler wont complain */}
       {(decodedDonationNpub || decodedSpeakerNpub) && (
         <ZapList
@@ -76,20 +57,7 @@ function PresentationCard({
           (showBool ? "" : "invisible")
         }
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="#FFFF00"
-          viewBox="0 0 24 24"
-          strokeWidth="1.5"
-          stroke="#FFA500"
-          className="w-10 h-10"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
-          />
-        </svg>
+        <Bolt />
         {globalAmount} Sats Zapped
       </div>
     </div>

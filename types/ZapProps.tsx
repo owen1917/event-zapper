@@ -1,8 +1,8 @@
-import Metadata from "./Metadata";
-
 interface ZapProps {
-    amount: number,
-    author: string,
+  amount: number;
+  author: string;
+  text: string;
+  created_at: number;
 }
 
-export default ZapProps
+export default ZapProps;

@@ -57,14 +57,15 @@ const useStore = create<State>((set) => ({
         item.id === card.id ? card : item
       ),
     })), // clearSpeakerCards: () => set(() => ({ SpeakerCards: [] })),
-  setSpeakerCards: (newCard: Card) =>
+  setSpeakerCards: (newCard: Card) => {
     set((state) => {
       let newCards = [...state.SpeakerCards];
 
       newCards.push(newCard);
 
       return { SpeakerCards: newCards };
-    }),
+    });
+  },
 
   setSessionStart: (date) => set(() => ({ sessionStart: date })),
   removeSpeakerCard: (cardID: number) => {

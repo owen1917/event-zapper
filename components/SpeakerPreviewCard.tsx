@@ -24,6 +24,18 @@ const SpeakerPreviewCard = ({
   const fileInput = useRef<HTMLInputElement>(null);
   const [imageSrc, setImageSrc] = useState("dummy.svg");
 
+  const [loading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const resetToDefault = useCallback(() => {
+    setImageSrc("dummy.svg");
+    setNpubPrefix("");
+    setDonationNpubPrefix("");
+    setName("");
+    setError("");
+    setIsLoading(false);
+  }, []);
+
   const handleAddSpeaker = useCallback(() => {
     addSpeaker({
       name,
@@ -33,11 +45,15 @@ const SpeakerPreviewCard = ({
     });
 
     // reset to default
-    setImageSrc("dummy.svg");
-    setNpubPrefix("");
-    setDonationNpubPrefix("");
-    setName("");
-  }, [addSpeaker, name, npubPrefix, donationNpubPrefix, imageSrc]);
+    resetToDefault();
+  }, [
+    addSpeaker,
+    name,
+    npubPrefix,
+    donationNpubPrefix,
+    imageSrc,
+    resetToDefault,
+  ]);
 
   const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0];
@@ -52,17 +68,19 @@ const SpeakerPreviewCard = ({
     }
   };
 
-  const handlePaste = useCallback((event: any) => {
+  const handlePaste = useCallback(async (event: any) => {
     const pastedText = event.clipboardData.getData("Text");
 
-    if (pastedText.includes("npub")) {
-      setNpubPrefix(pastedText);
-      parseNpubProfilePicture({
-        npub: pastedText,
-        handleSetImg: setImageSrc,
-        handleSetName: setName,
-      });
-    }
+    //setNpubPrefix(pastedText);
+
+    await parseNpubProfilePicture({
+      npub: pastedText,
+      handleSetImg: setImageSrc,
+      handleSetName: setName,
+      handleLoading: setIsLoading,
+      handleError: setError,
+      handleNpub: setNpubPrefix,
+    });
   }, []);
 
   const handleFileInputClick = useCallback(() => {
@@ -73,53 +91,62 @@ const SpeakerPreviewCard = ({
     fileInput.current!.click();
   }, [nostrProfileToggle]);
 
+  const handleToggleNostrProfile = useCallback(() => {
+    setNostrProfileToggle(!nostrProfileToggle);
+    resetToDefault();
+  }, [nostrProfileToggle, resetToDefault]);
+
   return (
     <div className="flex flex-col p-3 text-gray-900 rounded-lg group bg-gradient-to-br from-purple-500 to-pink-500 group-hover:from-purple-500 group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800">
+      {/* INPUTS AND IMAGE */}
       <div className="flex flex-row">
-        <div className="flex flex-col space-y-3 items-center self-center justify-center p-3">
-          <div className="flex flex-col space-y-3 items-center ml-4">
+        <div>
+          {/* IMAGE */}
+          <div className="flex flex-col space-y-3 items-center self-center justify-center">
             <Image
               src={imageSrc}
               alt="Picture of the author"
               className={`object-cover rounded-full shrink-0 aspect-square max-h-[50%] self-start ${
                 nostrProfileToggle ? "cursor-default" : "cursor-pointer"
               }`}
-              width="100"
-              height="100"
+              width="85"
+              height="85"
               onClick={handleFileInputClick}
             />
-            <div className="font-bold text-sm text-white">{name}</div>
+            {nostrProfileToggle && (
+              <div className="font-bold text-sm text-white">{name}</div>
+            )}
+            {imageSrc === "dummy.svg" && !nostrProfileToggle ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="3"
+                stroke="#fff"
+                style={{ top: "-90", left: "-20" }}
+                onClick={handleFileInputClick}
+                className="w-6 h-6 relative rounded-full cursor-pointer dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:focus:border-gray-700"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+            ) : null}
           </div>
-          {imageSrc === "dummy.svg" && !nostrProfileToggle ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="3"
-              stroke="#fff"
-              style={{ top: "-95", left: "-15" }}
-              onClick={handleFileInputClick}
-              className="w-6 h-6 relative rounded-full cursor-pointer dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:focus:border-gray-700"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 4.5v15m7.5-7.5h-15"
-              />
-            </svg>
-          ) : null}
           <input
             type="file"
             accept="image/*"
             style={{ display: "none" }}
             ref={fileInput}
             onChange={(event) => handleImageUpload(event)}
-            className="block w-full p-2  border border-gray-300 rounded-lg bg-red sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            className="block w-full p-2 border border-gray-300 rounded-lg bg-red sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           />
         </div>
         <div className="w-[100%] space-y-3">
           {!nostrProfileToggle && (
-            <div>
+            <div className="mx-3">
               <label
                 htmlFor="small-input"
                 className="block mb-2 text-sm font-medium text-white"
@@ -137,7 +164,7 @@ const SpeakerPreviewCard = ({
           )}
 
           {nostrProfileToggle && (
-            <div>
+            <div className="mx-3">
               <label
                 htmlFor="small-input-2"
                 className="block mb-2 text-sm font-medium text-white"
@@ -147,16 +174,31 @@ const SpeakerPreviewCard = ({
               <input
                 min={1}
                 type="text"
+                disabled={!!npubPrefix && !error}
                 id="small-input-2"
                 value={npubPrefix}
-                onChange={(e) => setNpubPrefix(e.target.value)}
+                onChange={() => {}}
                 onPaste={handlePaste}
-                className="block w-full p-2  border border-gray-300 rounded-lg bg-red sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                onBlur={() => {
+                  if (!!error) {
+                    resetToDefault();
+                  }
+                }}
+                className="block w-full p-2  border disabled:opacity-50 border-gray-300 rounded-lg bg-red sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               />
+              {error ? (
+                <p className="font-italic text-black text-xs italic mt-1">
+                  {error}
+                </p>
+              ) : (
+                <p className="font-italic text-black text-xs italic opacity-70 mt-1">
+                  {!npubPrefix ? "Please paste your npub above" : null}
+                </p>
+              )}
             </div>
           )}
           {!nostrProfileToggle && (
-            <div>
+            <div className="mx-3">
               <label
                 htmlFor="small-input-3"
                 className="block mb-2 text-sm font-medium text-white"
@@ -188,23 +230,28 @@ const SpeakerPreviewCard = ({
         </div>
       </div>
 
-      <span className="text-sm font-medium text-gray-900 dark:text-gray-300 ml-auto my-2">
-        Has nostr profile
-      </span>
-      <label className="relative inline-flex items-center cursor-pointer ml-auto">
-        <input
-          type="checkbox"
-          checked={nostrProfileToggle}
-          className="sr-only peer"
-          onChange={(e) => setNostrProfileToggle(!nostrProfileToggle)}
-        />
-        <div className="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-      </label>
+      {/* TOGGLE */}
+      <div className="flex flex-col">
+        <span className="text-sm font-medium text-gray-900 dark:text-gray-300 ml-auto my-2">
+          Has nostr profile
+        </span>
 
+        <label className="relative inline-flex items-center cursor-pointer ml-auto">
+          <input
+            type="checkbox"
+            checked={nostrProfileToggle}
+            className="sr-only peer"
+            onChange={handleToggleNostrProfile}
+          />
+          <div className="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+        </label>
+      </div>
+
+      {/* BUTTON */}
       <button
         onClick={handleAddSpeaker}
         type="button"
-        disabled={disabledRules}
+        disabled={disabledRules || loading || !!error}
         className="text-white mt-3 transition-all ease-in  bg-indigo-800 hover:bg-indigo-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5
          mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 disabled:opacity-50 disabled:pointer-events-none"
       >

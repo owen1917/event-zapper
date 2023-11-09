@@ -4,7 +4,7 @@ import lightningPayReq from "bolt11";
 import { Event, Filter, SimplePool } from "nostr-tools";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
-import ZapCard from "./ZapCard";
+import ZapTimeline from "./ZapTimeline/ZapTimeline";
 import useStore from "./store";
 
 function ZapList({
@@ -19,6 +19,10 @@ function ZapList({
   const [zaps, setZaps] = useState<ZapProps[]>([]);
   const [immediateEvents, setImmediateEvents] = useState<Event[]>([]);
   const [events] = useDebounce(immediateEvents, 1000);
+
+  console.log("events", events);
+  console.log("immediateEvents", immediateEvents);
+  console.log("zaps", zaps);
 
   function fetchEventFromRelays(
     filter: Filter,
@@ -65,6 +69,7 @@ function ZapList({
       const bolt11Tag = event.tags.find((tag) => tag[0] == "bolt11")!;
       const bolt11: string = bolt11Tag[1];
       const decoded = lightningPayReq.decode(bolt11);
+
       const amount = decoded.satoshis;
       let description;
       try {
@@ -92,7 +97,12 @@ function ZapList({
       //   console.log('e tag found');
       //   return <></>
       // }
-      zaps.push({ amount: amount!, author: senderPub });
+      zaps.push({
+        amount: amount!,
+        author: senderPub,
+        text: event.content,
+        created_at: event.created_at,
+      });
     });
     setZaps(zaps);
   }, [events]);
@@ -102,9 +112,10 @@ function ZapList({
   setter(totalZaps);
   return (
     <div className="flex flex-col space-y-2 w-full px-2 py-4 overflow-y-auto h-full">
-      {zaps.map((zap: ZapProps, index) => {
+      <ZapTimeline zaps={zaps} />
+      {/* {zaps.map((zap: ZapProps, index) => {
         return <ZapCard key={index} zap={zap} />;
-      })}
+      })} */}
     </div>
   );
 }
