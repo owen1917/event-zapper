@@ -1,8 +1,9 @@
+import { trimAndAddEllipsis } from "@/app/utils";
 import fetchEventFromRelays from "@/lib/nostr";
 import Card from "@/types/Card";
 import Image from "next/image";
 import { Event, Filter, nip19 } from "nostr-tools";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import useStore from "./store";
 
 function SpeakerCard({ card }: { card: Card }) {
@@ -50,6 +51,8 @@ function SpeakerCard({ card }: { card: Card }) {
     removeSpeakerCard(card.id);
   }, [removeSpeakerCard, card.id]);
 
+  const smartName = useMemo(() => trimAndAddEllipsis(name || ""), [name]);
+
   return (
     <div className="flex items-center justify-start space-x-5  relative p-3 text-gray-900 rounded-lg group bg-gradient-to-br from-purple-500 to-pink-500 group-hover:from-purple-500 group-hover:to-pink-500  focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800">
       <div className="flex flex-col space-y-3 items-center ml-4">
@@ -76,7 +79,7 @@ function SpeakerCard({ card }: { card: Card }) {
             />
           </svg>
         ) : null}
-        <div className="font-bold text-sm text-white">{name}</div>
+        <div className="font-bold text-sm text-white">{smartName}</div>
       </div>
       <div className="flex flex-col space-y-4 justify-center w-full">
         {npub && (

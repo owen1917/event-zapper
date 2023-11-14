@@ -9,11 +9,11 @@ interface Props {
 const ZapTimeline = ({ zaps }: Props) => {
   const toastOptions = useMemo(() => {
     return {
-      duration: 2000,
+      duration: 4000,
       position: "top-center" as ToastPosition,
 
       // Styling
-      style: { backgroundColor: "violet" },
+      style: { backgroundColor: "violet", width: "100%" },
 
       // Custom Icon
       icon: "⚡",
@@ -28,8 +28,7 @@ const ZapTimeline = ({ zaps }: Props) => {
 
   useEffect(() => {
     zaps.forEach((zap) => {
-      console.log(zap);
-      toast(`${zap.amount} from ${zap.author}`, toastOptions);
+      toast(`${zap.amount} ➡️ "${zap.text}"`, toastOptions);
     });
   }, [toastOptions, zaps]);
 

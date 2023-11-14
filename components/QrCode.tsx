@@ -1,6 +1,8 @@
+import { trimAndAddEllipsis } from "@/app/utils";
 import Speaker from "@/types/Speaker";
 import Image from "next/image";
 import { QRCodeSVG } from "qrcode.react";
+import { useMemo } from "react";
 import useStore from "./store";
 
 function QrCode({
@@ -14,6 +16,11 @@ function QrCode({
     speaker.donationNpub != "" ? speaker.donationNpub : speaker.npub;
   const QRCodeSize = useStore((state) => state.QRCodeSize);
   const npubPrefix = useStore((state) => state.npubPrefix);
+
+  const smartName = useMemo(
+    () => trimAndAddEllipsis(speaker.name || ""),
+    [speaker.name]
+  );
 
   // wrap to new line if more than 3 items in mobile
 
@@ -46,7 +53,7 @@ function QrCode({
           width="200"
           height="200"
         />
-        <p className="text-3xl text-fuchsia-600">{speaker.name}</p>
+        <p className="text-3xl text-fuchsia-600">{smartName}</p>
       </div>
 
       <QRCodeSVG className="w-full h-full" value={npubPrefix + value} />

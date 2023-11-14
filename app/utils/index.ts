@@ -43,3 +43,7 @@ export const parseNpubProfilePicture = async ({
     handleNpub(npub);
   });
 };
+
+export function trimAndAddEllipsis(str: string) {
+  return str.length > 15 ? str.substring(0, 25) + "..." : str;
+}
