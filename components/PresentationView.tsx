@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Toaster } from "react-hot-toast";
+import Bolt from "./Bolt";
 import PresentationCard from "./PresentationCard";
 import useStore from "./store";
 function PresentationView() {
@@ -21,6 +23,15 @@ function PresentationView() {
           />
         ))}
       </div>
+      <div
+        className={
+          "flex justify-end text-2xl font-bold text-violet-600 w-full px-4 "
+        }
+      >
+        <Bolt />
+        {amount} Sats Zapped
+      </div>
+      <Toaster />
     </div>
   );
 }

@@ -1,3 +1,5 @@
+import { mockEvents } from "@/app/mocks/mockEvents";
+import { mockZaps } from "@/app/mocks/mockZaps";
 import ZapProps from "@/types/ZapProps";
 import { insertEventIntoDescendingList } from "@/utils/insert";
 import lightningPayReq from "bolt11";
@@ -16,8 +18,8 @@ function ZapList({
 }) {
   const eventStart = useStore((state) => state.sessionStart);
 
-  const [zaps, setZaps] = useState<ZapProps[]>([]);
-  const [immediateEvents, setImmediateEvents] = useState<Event[]>([]);
+  const [zaps, setZaps] = useState<ZapProps[]>(mockZaps);
+  const [immediateEvents, setImmediateEvents] = useState<Event[]>(mockEvents);
   const [events] = useDebounce(immediateEvents, 1000);
 
   console.log("events", events);
@@ -110,12 +112,10 @@ function ZapList({
   // get total amount of zaps
   const totalZaps = zaps.reduce((acc, zap) => acc + zap.amount, 0);
   setter(totalZaps);
+  console.log(zaps);
   return (
     <div className="flex flex-col space-y-2 w-full px-2 py-4 overflow-y-auto h-full">
       <ZapTimeline zaps={zaps} />
-      {/* {zaps.map((zap: ZapProps, index) => {
-        return <ZapCard key={index} zap={zap} />;
-      })} */}
     </div>
   );
 }

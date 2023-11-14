@@ -31,7 +31,6 @@ const ZapTimelineItem = ({ zap }: ZapTimelineItemProps) => {
     return <></>;
   }
   const content: Metadata = JSON.parse(events[0].content);
-  console.log("content", content);
   const createdAt = formatSeconds(events[0].created_at);
 
   return (

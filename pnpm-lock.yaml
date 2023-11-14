@@ -6,6 +6,7 @@ specifiers:
   '@types/react-dom': 18.2.6
   autoprefixer: 10.4.14
   bolt11: ^1.4.1
+  csstype: ^3.1.2
   date-fns: ^2.30.0
   eslint: 8.44.0
   eslint-config-next: 13.4.9
@@ -17,6 +18,7 @@ specifiers:
   qrcode.react: ^3.1.0
   react: 18.2.0
   react-dom: 18.2.0
+  react-hot-toast: ^2.4.1
   react-responsive-modal: ^6.4.2
   react-tooltip: ^5.22.0
   tailwindcss: 3.3.2
@@ -30,6 +32,7 @@ dependencies:
   '@types/react-dom': 18.2.6
   autoprefixer: 10.4.14_postcss@8.4.25
   bolt11: 1.4.1
+  csstype: 3.1.2
   date-fns: 2.30.0
   eslint: 8.44.0
   eslint-config-next: 13.4.9_iqf7tbmerllfqanu4l3d6aqdn4
@@ -41,6 +44,7 @@ dependencies:
   qrcode.react: 3.1.0_react@18.2.0
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
+  react-hot-toast: 2.4.1_s7mghcr6idhb4d5ook54gl4n44
   react-responsive-modal: 6.4.2_biqbaboplfbrettd7655fr4n2y
   react-tooltip: 5.22.0_biqbaboplfbrettd7655fr4n2y
   tailwindcss: 3.3.2
@@ -1551,6 +1555,14 @@ packages:
       slash: 3.0.0
     dev: false
 
+  /goober/2.1.13_csstype@3.1.2:
+    resolution: {integrity: sha512-jFj3BQeleOoy7t93E9rZ2de+ScC4lQICLwiAQmKMg9F6roKGaLSHoCDYKkWlSafg138jejvq/mTdvmnwDQgqoQ==}
+    peerDependencies:
+      csstype: ^3.0.10
+    dependencies:
+      csstype: 3.1.2
+    dev: false
+
   /gopd/1.0.1:
     resolution: {integrity: sha512-d65bNlIadxvpb/A2abVdlqKqV563juRnZ1Wtk6s1sIR8uNsXR70xqIzVqxVf1eTqDunwT2MkczEeaezCKTZhwA==}
     dependencies:
@@ -2394,6 +2406,20 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.0
+    dev: false
+
+  /react-hot-toast/2.4.1_s7mghcr6idhb4d5ook54gl4n44:
+    resolution: {integrity: sha512-j8z+cQbWIM5LY37pR6uZR6D4LfseplqnuAO4co4u8917hBUvXlEqyP1ZzqVLcqoyUesZZv/ImreoCeHVDpE5pQ==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=16'
+      react-dom: '>=16'
+    dependencies:
+      goober: 2.1.13_csstype@3.1.2
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    transitivePeerDependencies:
+      - csstype
     dev: false
 
   /react-is/16.13.1:

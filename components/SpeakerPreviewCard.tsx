@@ -186,13 +186,9 @@ const SpeakerPreviewCard = ({
                 }}
                 className="block w-full p-2  border disabled:opacity-50 border-gray-300 rounded-lg bg-red sm:text-xs focus:ring-blue-500 focus:border-blue-500 bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               />
-              {error ? (
+              {error && (
                 <p className="font-italic text-black text-xs italic mt-1">
                   {error}
-                </p>
-              ) : (
-                <p className="font-italic text-black text-xs italic opacity-70 mt-1">
-                  {!npubPrefix ? "Please paste your npub above" : null}
                 </p>
               )}
             </div>

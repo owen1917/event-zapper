@@ -3,8 +3,6 @@ import ZapList from "@/components/ZapList";
 import Card from "@/types/Card";
 import { nip19 } from "nostr-tools";
 import { useEffect, useState } from "react";
-import Bolt from "./Bolt";
-import useStore from "./store";
 function PresentationCard({
   speaker,
   setGlobal,
@@ -15,9 +13,6 @@ function PresentationCard({
   globalAmount: number;
 }) {
   const [totalZaps, setTotalZaps] = useState(0);
-  const speakers = useStore((state) => state.SpeakerCards);
-
-  const showBool = speaker.id === speakers.length;
 
   let decodedDonationNpub;
   try {
@@ -30,8 +25,6 @@ function PresentationCard({
   } catch (error) {
     console.log("cant decode speaker npub");
   }
-
-  console.log(decodedSpeakerNpub);
 
   useEffect(() => {
     setGlobal((prev: any) => ({ ...prev, [speaker.npub]: totalZaps }));
@@ -51,15 +44,6 @@ function PresentationCard({
           setter={setTotalZaps}
         />
       )}
-      <div
-        className={
-          "flex justify-end text-2xl font-bold text-violet-600 w-full px-4 " +
-          (showBool ? "" : "invisible")
-        }
-      >
-        <Bolt />
-        {globalAmount} Sats Zapped
-      </div>
     </div>
   );
 }
