@@ -20,10 +20,6 @@ function ZapList({
   const [immediateEvents, setImmediateEvents] = useState<Event[]>([]);
   const [events] = useDebounce(immediateEvents, 1000);
 
-  console.log("events", events);
-  console.log("immediateEvents", immediateEvents);
-  console.log("zaps", zaps);
-
   function fetchEventFromRelays(
     filter: Filter,
     onEventReceived: CallableFunction
@@ -48,7 +44,6 @@ function ZapList({
   }
 
   useEffect(() => {
-    console.log(Math.floor(eventStart.getTime() / 1000));
     fetchEventFromRelays(
       {
         kinds: [9735],
@@ -61,7 +56,7 @@ function ZapList({
         );
       }
     );
-  }, []);
+  }, [eventStart, npub]);
 
   useEffect(() => {
     let zaps: ZapProps[] = [];

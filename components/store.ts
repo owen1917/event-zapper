@@ -33,7 +33,7 @@ interface State {
 const useStore = create<State>((set) => ({
   totalZaps: [0],
   imgSize: "10",
-  npubPrefix: "nostr:",
+  npubPrefix: "https://njump.me/",
   QRCodeSize: "33",
   SpeakerCards: [],
   numOfSpeakers: 1,

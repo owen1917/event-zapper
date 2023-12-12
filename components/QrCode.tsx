@@ -13,7 +13,7 @@ function QrCode({
   totalZaps: number;
 }) {
   const value =
-    speaker.donationNpub != "" ? speaker.donationNpub : speaker.npub;
+    speaker.donationNpub !== "" ? speaker.donationNpub : speaker.npub;
   const QRCodeSize = useStore((state) => state.QRCodeSize);
   const npubPrefix = useStore((state) => state.npubPrefix);
 
