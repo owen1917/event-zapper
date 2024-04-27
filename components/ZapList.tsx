@@ -1,44 +1,49 @@
-import React, { Dispatch, SetStateAction, use, useEffect } from "react";
-import { useState } from "react";
-import useStore from "./store";
 import ZapProps from "@/types/ZapProps";
-import ZapCard from "./ZapCard";
-import { useSubscribe } from 'nostr-hooks';
-import lightningPayReq from 'bolt11';
-import { Event, Filter, SimplePool } from 'nostr-tools'
-import { useDebounce } from 'use-debounce';
 import { insertEventIntoDescendingList } from "@/utils/insert";
+import lightningPayReq from "bolt11";
+import { Event, Filter, SimplePool } from "nostr-tools";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useDebounce } from "use-debounce";
+import ZapTimeline from "./ZapTimeline/ZapTimeline";
+import useStore from "./store";
 
-function ZapList({ npub, setter }: { npub: string, setter: Dispatch<SetStateAction<number>> }) {
+function ZapList({
+  npub,
+  setter,
+}: {
+  npub: string;
+  setter: Dispatch<SetStateAction<number>>;
+}) {
   const eventStart = useStore((state) => state.sessionStart);
 
   const [zaps, setZaps] = useState<ZapProps[]>([]);
   const [immediateEvents, setImmediateEvents] = useState<Event[]>([]);
   const [events] = useDebounce(immediateEvents, 1000);
 
-  function fetchEventFromRelays(filter: Filter, onEventReceived: CallableFunction) {
+  function fetchEventFromRelays(
+    filter: Filter,
+    onEventReceived: CallableFunction
+  ) {
     const pool = new SimplePool();
 
     const relays = useStore.getState().relays;
 
     const sub = pool.sub(relays, [filter]);
-  
-    sub.on('event', event => {
+
+    sub.on("event", (event) => {
       onEventReceived(event);
     });
 
-    sub.on('count', count => {
+    sub.on("count", (count) => {
       console.log(`Relays: ${count}`);
-    }
-    );
+    });
     return () => {
-      console.log('unsubscribing');
-      sub.unsub()
-    }
+      console.log("unsubscribing");
+      sub.unsub();
+    };
   }
 
   useEffect(() => {
-    console.log(Math.floor(eventStart.getTime() / 1000));
     fetchEventFromRelays(
       {
         kinds: [9735],
@@ -46,34 +51,38 @@ function ZapList({ npub, setter }: { npub: string, setter: Dispatch<SetStateActi
         "#p": [npub],
       },
       (event: Event) => {
-        setImmediateEvents((prev) => insertEventIntoDescendingList([...prev], event));
+        setImmediateEvents((prev) =>
+          insertEventIntoDescendingList([...prev], event)
+        );
       }
-    )
-  }, []);
+    );
+  }, [eventStart, npub]);
 
   useEffect(() => {
     let zaps: ZapProps[] = [];
     events.forEach((event) => {
-      const bolt11Tag = event.tags.find((tag) => tag[0] == 'bolt11')!;
+      const bolt11Tag = event.tags.find((tag) => tag[0] == "bolt11")!;
       const bolt11: string = bolt11Tag[1];
       const decoded = lightningPayReq.decode(bolt11);
+
       const amount = decoded.satoshis;
       let description;
       try {
-        description = JSON.parse(event.tags.find((tag) => tag[0] == 'description')![1]);
+        description = JSON.parse(
+          event.tags.find((tag) => tag[0] == "description")![1]
+        );
       } catch (error) {
-        console.error('Failed to parse JSON:');
-        return; // Skip this event and go to the next one
-      }
-      
-      const senderPub = description.pubkey;
-  
-      const eTag = event.tags.find((tag) => tag[0] == 'e');
-      if (eTag) {
-        console.log('e tag found');
+        console.error("Failed to parse JSON:");
         return; // Skip this event and go to the next one
       }
 
+      const senderPub = description.pubkey;
+
+      const eTag = event.tags.find((tag) => tag[0] == "e");
+      if (eTag) {
+        console.log("e tag found");
+        return; // Skip this event and go to the next one
+      }
 
       // if e tag then its reaction to event, if no e tag then its a zap to person
       // https://github.com/nostr-protocol/nips/blob/master/57.md
@@ -83,22 +92,25 @@ function ZapList({ npub, setter }: { npub: string, setter: Dispatch<SetStateActi
       //   console.log('e tag found');
       //   return <></>
       // }
-      zaps.push({amount: amount!, author: senderPub});
+      zaps.push({
+        amount: amount!,
+        author: senderPub,
+        text: event.content,
+        created_at: event.created_at,
+      });
     });
     setZaps(zaps);
-  }, [events])
+  }, [events]);
 
   // get total amount of zaps
   const totalZaps = zaps.reduce((acc, zap) => acc + zap.amount, 0);
   setter(totalZaps);
-  return (
 
+  return (
     <div className="flex flex-col space-y-2 w-full px-2 py-4 overflow-y-auto h-full">
-      {zaps.map((zap: ZapProps, index) => {
-        return <ZapCard key={index} zap={zap} />
-      })}
+      <ZapTimeline zaps={zaps} />
     </div>
-  )
+  );
 }
 
 export default ZapList;
